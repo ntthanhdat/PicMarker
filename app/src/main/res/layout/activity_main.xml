@@ -34,5 +34,21 @@
         android:stretchColumns="*"
         />
     </LinearLayout>
-
+    <LinearLayout
+        android:id="@+id/brush_choose_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:baselineAligned="false"
+        android:orientation="vertical"
+        android:background="#37000000"
+        android:padding="8dp"
+        >
+        <TableLayout
+            android:id="@+id/brush_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="*"
+            />
+    </LinearLayout>
 </FrameLayout>

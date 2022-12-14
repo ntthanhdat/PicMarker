@@ -67,7 +67,7 @@ public class PaintView extends View {
 
 
         mEmboss = new EmbossMaskFilter(new float[] {1, 1, 1}, 0.4f, 6, 3.5f);
-        mBlur = new BlurMaskFilter(5, BlurMaskFilter.Blur.NORMAL);
+        mBlur = new BlurMaskFilter(BRUSH_SIZE/2, BlurMaskFilter.Blur.NORMAL);
     }
 
     public void init(DisplayMetrics metrics){

@@ -36,8 +36,10 @@ public class MainActivity extends AppCompatActivity {
     private String strFileName;
     //slight foot
     private ViewGroup mBrushPanel;
-    private ViewGroup   mBrushColors;
-    private SeekBar     mBrushStroke;
+    private ViewGroup mBrushColors;
+
+    private ViewGroup mBrushTypePanel;
+    private ViewGroup mBrushType;
 
 
     static int[] COLORS = {
@@ -87,6 +89,24 @@ public class MainActivity extends AppCompatActivity {
         createBrushPanelContent();
         //het tao bang mau
 
+        //tao brush type
+        mBrushTypePanel = (ViewGroup)findViewById(R.id.brush_choose_panel);
+        mBrushType = (ViewGroup)findViewById(R.id.brush_type);
+        mBrushTypePanel.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener()
+        {
+            @Override
+            public boolean onPreDraw()
+            {
+                mBrushTypePanel.getViewTreeObserver().removeOnPreDrawListener(this);
+                mBrushTypePanel.setTranslationY(isLandscape() ?
+                        -mBrushTypePanel.getHeight() : mBrushTypePanel.getHeight());
+                return false;
+            }
+        });
+
+        createBrushTypePanelContent();
+        //het brush type
+
         ///tao seek bar
         SeekBar seekbar = findViewById(R.id.seek_bar);
         seekbar.setMax(200);
@@ -134,6 +154,14 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else{
                     showBrushPanel();
+                }
+                break;
+            case R.id.action_brush_type:
+                if(mBrushTypePanel.getTranslationY() == 0){
+                    hideBrushTypePanel();
+                }
+                else{
+                    showBrushTypePanel();
                 }
                 break;
             case R.id.properties:
@@ -264,6 +292,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void showBrushPanel()
     {
+        if(mBrushTypePanel.getTranslationY() == 0){
+            hideBrushTypePanel();
+        }
         mBrushPanel.animate()
                 .translationY(0)
                 .start();
@@ -281,4 +312,74 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 //het chuc nang tao bang mau
+
+    //chuc nang thay doi loai but
+    private void createBrushTypePanelContent()
+    {
+
+        TableRow tableRow = null;
+        tableRow = new TableRow(this);
+
+        mBrushType.addView(tableRow, new TableLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT));
+        tableRow.addView(createToolTypeButton(tableRow, R.drawable.ic_action_brush, 1));
+        tableRow.addView(createToolTypeButton(tableRow, R.drawable.ic_blur, 2));
+        tableRow.addView(createToolTypeButton(tableRow, R.drawable.ic_emboss, 3));
+
+
+    }
+
+    private ImageButton createToolTypeButton(ViewGroup parent, int drawableResId, int index)
+    {
+        ImageButton button = (ImageButton)getLayoutInflater().inflate(R.layout.button_brush_spot, parent, false);
+        button.setImageResource(drawableResId);
+        button.setOnClickListener(mButtonClick1);
+        if(index != -1){
+            button.setTag(Integer.valueOf(index));
+        }
+        return button;
+    }
+
+    private View.OnClickListener mButtonClick1 = new View.OnClickListener()
+    {
+        @Override
+        public void onClick(View v)
+        {
+            //tahy doi hinh dang cua icon tren menu
+            switch(((Integer)v.getTag()).intValue()){
+                case 1:
+                    paintView.normal();
+                    break;
+                case 2:
+                    paintView.blur();
+                    break;
+                case 3:
+                    paintView.emboss();
+                    break;
+                default:
+                    paintView.normal();
+                    break;
+
+            }
+            hideBrushTypePanel();
+        }
+    };
+
+    private void showBrushTypePanel()
+    {
+        if(mBrushPanel.getTranslationY() == 0){
+            hideBrushPanel();
+        }
+        mBrushTypePanel.animate()
+                .translationY(0)
+                .start();
+    }
+
+    private void hideBrushTypePanel()
+    {
+        mBrushTypePanel.animate()
+                .translationY(isLandscape() ?
+                        -mBrushTypePanel.getHeight() : mBrushTypePanel.getHeight())
+                .start();
+    }
+    //het chuc nang thay doi loai but
 }

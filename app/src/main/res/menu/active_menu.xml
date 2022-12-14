@@ -8,7 +8,7 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/action_eraser"
+        android:id="@+id/action_brush_type"
         android:title="action_eraser"
         android:icon="@drawable/ic_action_brush"
         app:showAsAction="always" />
