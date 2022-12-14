@@ -3,8 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/NTTD/AndroidStudioProjects/PicMarker/app/src/main/res/layout/activity_main.xml" value="0.32472826086956524" />
+        <entry key="..\:/Users/NTTD/AndroidStudioProjects/PicMarker/app/src/main/res/layout/activity_main.xml" value="0.21142857142857144" />
         <entry key="..\:/Users/NTTD/AndroidStudioProjects/PicMarker/app/src/main/res/layout/activity_properties.xml" value="0.203125" />
+        <entry key="..\:/Users/NTTD/AndroidStudioProjects/PicMarker/app/src/main/res/layout/button_paint_spot.xml" value="0.38697916666666665" />
         <entry key="..\:/Users/NTTD/AndroidStudioProjects/PicMarker/app/src/main/res/menu/active_menu.xml" value="0.38697916666666665" />
         <entry key="..\:/Users/NTTD/AndroidStudioProjects/PicMarker/app/src/main/res/xml/preferences_setting.xml" value="0.32472826086956524" />
       </map>
