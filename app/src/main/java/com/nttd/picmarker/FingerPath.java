@@ -7,7 +7,17 @@ public class FingerPath extends Path {
     private int color;
     private int strokeWidth;
     private Path path;
+    public boolean emboss;
+    public boolean blur;
 
+
+    public FingerPath(int color, boolean emboss, boolean blur, int strokeWidth, Path path) {
+        this.color = color;
+        this.emboss = emboss;
+        this.blur = blur;
+        this.strokeWidth = strokeWidth;
+        this.path = path;
+    }
     public FingerPath(int color, int strokeWidth, Path path) {
         this.color = color;
         this.strokeWidth = strokeWidth;
@@ -36,5 +46,21 @@ public class FingerPath extends Path {
 
     public void setPath(Path path) {
         this.path = path;
+    }
+
+    public boolean isEmboss() {
+        return emboss;
+    }
+
+    public void setEmboss(boolean emboss) {
+        this.emboss = emboss;
+    }
+
+    public boolean isBlur() {
+        return blur;
+    }
+
+    public void setBlur(boolean blur) {
+        this.blur = blur;
     }
 }

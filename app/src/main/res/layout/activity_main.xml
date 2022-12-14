@@ -18,7 +18,7 @@
         android:layout_gravity="bottom"
         android:baselineAligned="false"
         android:orientation="vertical"
-        android:background="@color/brush_panel_bg"
+        android:background="#37000000"
         android:padding="8dp"
         >
 

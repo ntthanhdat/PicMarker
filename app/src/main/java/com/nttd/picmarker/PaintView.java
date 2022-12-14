@@ -2,8 +2,11 @@ package com.nttd.picmarker;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.EmbossMaskFilter;
+import android.graphics.MaskFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
@@ -25,7 +28,7 @@ import java.util.Random;
 
 public class PaintView extends View {
 
-    public int BRUSH_SIZE = 10;
+    public int BRUSH_SIZE = 20;
     public static int COLOR_PEN = Color.BLACK;
     public static final int COLOR_ERASER = Color.WHITE;
     public static final int DEFAULT_BG_COLOR = Color.WHITE;
@@ -34,6 +37,11 @@ public class PaintView extends View {
     private Path mPath;
     private Paint mPaint;
     private int currentColor;
+    private int strokeWidth;
+    private boolean emboss;
+    private boolean blur;
+    private MaskFilter mEmboss;
+    private MaskFilter mBlur;
     public ArrayList<FingerPath> paths = new ArrayList<>();
     public ArrayList<FingerPath> deletedPaths = new ArrayList<>();
     private int pathIndex = -1;
@@ -56,6 +64,10 @@ public class PaintView extends View {
         mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setXfermode(null);
         mPaint.setAlpha(0xff);
+
+
+        mEmboss = new EmbossMaskFilter(new float[] {1, 1, 1}, 0.4f, 6, 3.5f);
+        mBlur = new BlurMaskFilter(5, BlurMaskFilter.Blur.NORMAL);
     }
 
     public void init(DisplayMetrics metrics){
@@ -65,6 +77,7 @@ public class PaintView extends View {
         mCanvas = new Canvas(mBitmap);
         mCanvas.drawColor(-1);
         currentColor = COLOR_PEN;
+        strokeWidth=BRUSH_SIZE;
     }
 
     public void init2(int width , int height ){
@@ -72,18 +85,34 @@ public class PaintView extends View {
         mCanvas = new Canvas(mBitmap);
         mCanvas.drawColor(-1);
         currentColor = COLOR_PEN;
+        strokeWidth=BRUSH_SIZE;
     }
+    //đổi màu bút
     public void pen(){
         currentColor = COLOR_PEN;
     }
-
-    public void eraser(){
-        currentColor = COLOR_ERASER;
+    public void setStrokeWidth(){
+        strokeWidth=BRUSH_SIZE;
+    }
+    //các loại bút
+    public void normal() {
+        emboss = false;
+        blur = false;
     }
 
+    public void emboss() {
+        emboss = true;
+        blur = false;
+    }
+
+    public void blur() {
+        emboss = false;
+        blur = true;
+    }
     public void clear(){
         paths.clear();
         deletedPaths.clear();
+        normal();
         mCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         pathIndex = -1;
         pen();
@@ -93,10 +122,12 @@ public class PaintView extends View {
     public void redo(){
         if(!deletedPaths.isEmpty()){
             mPath = new Path();
-            mPath = deletedPaths.get(deletedPaths.size()-1).getPath();
-            FingerPath fp = new FingerPath(currentColor, BRUSH_SIZE, mPath);
-            //mCanvas.drawColor(Color.TRANSPARENT,PorterDuff.Mode.CLEAR);
+            //code moi
+            FingerPath oldpath = deletedPaths.get(deletedPaths.size()-1);
+            FingerPath fp = new FingerPath(oldpath.getColor(), oldpath.isEmboss(), oldpath.isBlur(), oldpath.getStrokeWidth(), oldpath.getPath());
             mCanvas.drawPath(fp.getPath(),mPaint);
+            //hetcode moi
+
             paths.add(fp);
             pathIndex++;
             deletedPaths.remove(deletedPaths.size()-1);
@@ -167,7 +198,12 @@ public class PaintView extends View {
             mPaint.setColor(fp.getColor());
             mPaint.setStrokeWidth(fp.getStrokeWidth());
             mPaint.setMaskFilter(null);
+            if (fp.emboss)
+                mPaint.setMaskFilter(mEmboss);
+            else if (fp.blur)
+                mPaint.setMaskFilter(mBlur);
             mCanvas.drawPath(fp.getPath(), mPaint);
+
         }
 
         canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
@@ -176,7 +212,7 @@ public class PaintView extends View {
 
     private void touchStart(float x, float y){
         mPath = new Path();
-        FingerPath fp = new FingerPath(currentColor, BRUSH_SIZE, mPath);
+        FingerPath fp = new FingerPath(currentColor, emboss, blur, strokeWidth, mPath);
         paths.add(fp);
         pathIndex++;
         mPath.reset();

@@ -4,13 +4,13 @@
     <item
         android:id="@+id/action_brush"
         android:title="action_brush"
-        android:icon="@drawable/ic_action_brush"
+        android:icon="@drawable/ic_wheel"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/action_eraser"
         android:title="action_eraser"
-        android:icon="@drawable/ic_action_eraser"
+        android:icon="@drawable/ic_action_brush"
         app:showAsAction="always" />
 
     <item

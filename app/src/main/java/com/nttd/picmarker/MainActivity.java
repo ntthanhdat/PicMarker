@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Menu;
@@ -21,6 +22,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import com.nttd.picmarker.R;
 
@@ -54,11 +56,12 @@ public class MainActivity extends AppCompatActivity {
             Color.rgb(  7,   5,   0), // BLACK
 
             Color.rgb(129, 128, 127), // GRAY
-            Color.rgb(255,   4, 139), // PINK RED
+            Color.rgb(255,   255, 255), //  white
             Color.rgb( 51, 204, 255), // NAVY BLUE
             Color.rgb(102, 255, 204), // BRIGHT GREEN
     };
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -87,11 +90,13 @@ public class MainActivity extends AppCompatActivity {
         ///tao seek bar
         SeekBar seekbar = findViewById(R.id.seek_bar);
         seekbar.setMax(200);
+        seekbar.setMin(20);
         seekbar.setProgress(10);
         seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 paintView.BRUSH_SIZE = i;
+                paintView.setStrokeWidth();
             }
 
             @Override
@@ -253,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
             paintView.COLOR_PEN = COLORS[((Integer)v.getTag()).intValue()];
             paintView.pen();
             //mDrawingView.setDrawingColor(COLORS[((Integer)v.getTag()).intValue()]);
-            hideBrushPanel();
+            //hideBrushPanel();
         }
     };
 
