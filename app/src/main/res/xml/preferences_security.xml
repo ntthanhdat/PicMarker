@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Encode" >
+
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="switch_ste"
+            android:title="Steganography" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="encode_ELSM"
+            android:title="Use ELSM algorithm" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Decode">
+        <Preference
+            android:key="decode"
+            android:title="Decode with password"
+            android:summary="300px"/>
+    </PreferenceCategory>
+</PreferenceScreen>

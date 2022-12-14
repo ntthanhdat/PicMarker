@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="General" >
+        <EditTextPreference
+            android:defaultValue="Default value"
+            android:key="edit_text_preference_1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="The file" />
+        <Preference
+            android:key="type"
+            android:summary="false"
+            android:title="File type"/>
+        <Preference
+            android:key="Location"
+            android:title="Location"
+            android:summary="/PicMarker/"/>
+        <Preference
+            android:key="size"
+            android:title="File size"
+            android:summary="120kb"/>
+
+
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Detail">
+        <Preference
+            android:key="Width"
+            android:title="Width"
+            android:summary="300px"/>
+        <Preference
+            android:key="Height"
+            android:title="Height"
+            android:summary="300px"/>
+    </PreferenceCategory>
+</PreferenceScreen>

@@ -2,11 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/My_Application.iml" filepath="$PROJECT_DIR$/.idea/modules/My_Application.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/My_Application.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/My_Application.app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/My_Application.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/My_Application.app.androidTest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/My_Application.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/My_Application.app.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/My_Application.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/My_Application.app.unitTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/PicMarker.iml" filepath="$PROJECT_DIR$/.idea/modules/PicMarker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/PicMarker.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/PicMarker.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/PicMarker.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/PicMarker.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/PicMarker.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/PicMarker.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/PicMarker.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/PicMarker.app.unitTest.iml" />
     </modules>
   </component>
 </project>

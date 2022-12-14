@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_brush"
+        android:title="action_brush"
+        android:icon="@drawable/ic_action_brush"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_eraser"
+        android:title="action_eraser"
+        android:icon="@drawable/ic_action_eraser"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_undo"
+        android:title="action_undo"
+        android:icon="@drawable/ic_action_undo"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_redo"
+        android:title="action_redo"
+        android:icon="@drawable/ic_action_redo"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/photo"
+        android:icon="@drawable/ic_open_png"
+        android:title="Open"
+        app:showAsAction="collapseActionView" />
+    <item
+        android:id="@+id/save"
+        android:icon="@drawable/ic_save"
+        android:title="Save"
+        app:showAsAction="collapseActionView" />
+    <item
+        android:id="@+id/save_as"
+        android:icon="@drawable/ic_save_as"
+        android:title="Save As"
+        app:showAsAction="collapseActionView" />
+    <item
+        android:id="@+id/properties"
+        android:icon="@drawable/ic_properties"
+        android:title="Properties"
+        app:showAsAction="collapseActionView" />
+    <item
+        android:id="@+id/help"
+        android:icon="@drawable/ic_help"
+        android:title="Help"
+        app:showAsAction="collapseActionView" />
+    <item
+        android:id="@+id/exit"
+        android:icon="@drawable/ic_exit"
+        android:title="Exit"
+        app:showAsAction="collapseActionView" />
+
+
+</menu>
