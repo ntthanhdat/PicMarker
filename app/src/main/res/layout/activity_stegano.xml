@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:id="@+id/stegano">
     <Switch
-        android:id="@+id/switch2"
+        android:id="@+id/switchAES"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:paddingTop="@dimen/appbar_padding"
@@ -15,25 +15,33 @@
         android:text="Use AES password"
         android:textSize="18dp"
         tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-    <EditText
-        android:id="@+id/editTextTextPersonName"
+    <Switch
+        android:id="@+id/switchELSM"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:paddingTop="@dimen/appbar_padding"
         android:ems="10"
-        android:inputType="textShortMessage"
-        android:text="@string/Password" />
+        android:text="Use ELSM algorithm"
+        android:textSize="18dp"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName2"
+        android:id="@+id/editTextMessenger"
 
         android:ems="10"
         android:inputType="textShortMessage"
         android:layout_width="match_parent"
         android:layout_height="100dp"
+        android:hint="Messenger" />
+    <EditText
+        android:id="@+id/editTextPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/appbar_padding"
+        android:ems="10"
+        android:inputType="textShortMessage"
+        android:hint="Password" />
 
-        android:text="@string/Messenger" />
 
     <TextView
         android:id="@+id/text_status"
@@ -46,5 +54,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Save" />
+    <Button
+        android:id="@+id/button_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cancel" />
 
 </LinearLayout>

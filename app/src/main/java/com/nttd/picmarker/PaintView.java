@@ -215,6 +215,7 @@ public class PaintView extends View {
         FingerPath fp = new FingerPath(currentColor, emboss, blur, strokeWidth, mPath);
         paths.add(fp);
         pathIndex++;
+        deletedPaths.clear();
         mPath.reset();
         mPath.moveTo(x, y);
         mX = x;
@@ -257,4 +258,6 @@ public class PaintView extends View {
         }
         return true;
     }
+
+    //stegano
 }

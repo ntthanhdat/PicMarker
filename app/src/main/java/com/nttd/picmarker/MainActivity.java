@@ -164,10 +164,21 @@ public class MainActivity extends AppCompatActivity {
                     showBrushTypePanel();
                 }
                 break;
-            case R.id.properties:
-                startActivity(new Intent(MainActivity.this, PropertiesActivity.class));
+            case R.id.action_undo:
+                paintView.imageReverse();
+                if(nBitmap != null) {
+                    float centreX = (paintView.mCanvas.getWidth()-nBitmap.getWidth()) / 2;
+                    float centreY = (paintView.mCanvas.getHeight()-nBitmap.getHeight()) / 2;
+                    Bitmap.Config config;
+                    config = nBitmap.getConfig();
+                    paintView.mCanvas.drawBitmap(nBitmap, centreX, centreY, null);
+                }
                 break;
-                ///cac case khac
+            case R.id.action_redo:
+                paintView.redo();
+                break;
+
+                //open
             case R.id.photo:
                 Intent intent = new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -179,27 +190,15 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
                 return true;
 
-            case R.id.action_undo:
-                paintView.imageReverse();
-                if(nBitmap != null) {
-                    float centreX = (paintView.mCanvas.getWidth()-nBitmap.getWidth()) / 2;
-                    float centreY = (paintView.mCanvas.getHeight()-nBitmap.getHeight()) / 2;
-                    Bitmap.Config config;
-                    config = nBitmap.getConfig();
-                    //paintView.mCanvas.drawColor(-1);
-                    paintView.mCanvas.drawBitmap(nBitmap, centreX, centreY, null);
-                }
-                //Toast.makeText(this, "Reversed!", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.action_redo:
-                paintView.redo();
-                return true;
+            case R.id.properties:
+                startActivity(new Intent(MainActivity.this, PropertiesActivity.class));
+                break;
+            case R.id.help:
+                break;
+
 
             case R.id.exit:
-                // on below line we are finishing activity.
                 MainActivity.this.finish();
-
-                // on below line we are exiting our activity
                 System.exit(0);
                 return true;
             default:
