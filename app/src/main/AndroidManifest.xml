@@ -2,34 +2,51 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.nttd.picmarker">
-
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
     <application
         android:allowBackup="true"
+        android:name=".MyApplication"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/picmarker_logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/picmarker_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialDes"
+        android:requestLegacyExternalStorage="true"
         tools:targetApi="31">
         <activity
             android:name=".SteganographyActivity"
             android:exported="false"
-            android:label="@string/title_activity_steganography" />
+            android:label="@string/title_activity_steganography"
+            android:parentActivityName=".PropertiesActivity"/>
+        <activity
+            android:name=".DecodeActivity"
+            android:exported="false"
+            android:parentActivityName=".PropertiesActivity"/>
         <activity
             android:name=".PropertiesActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".MainActivity"/>
+        <activity
+            android:name=".HelpActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/title_activity_main"
-            android:theme="@style/Theme.MaterialDes">
+            android:theme="@style/Theme.MaterialDes"
+            android:requestLegacyExternalStorage="true"
+            android:configChanges="keyboardHidden|orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
     </application>
 

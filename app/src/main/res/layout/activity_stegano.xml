@@ -21,7 +21,7 @@
         android:layout_height="50dp"
         android:paddingTop="@dimen/appbar_padding"
         android:ems="10"
-        android:text="Use ELSM algorithm"
+        android:text="Use ELSB algorithm"
         android:textSize="18dp"
         tools:ignore="UseSwitchCompatOrMaterialXml" />
 

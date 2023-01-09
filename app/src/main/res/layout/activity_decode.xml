@@ -1,0 +1,44 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:orientation="vertical"
+    android:id="@+id/decode">
+    <Switch
+        android:id="@+id/switchAESDecode"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:paddingTop="@dimen/appbar_padding"
+        android:ems="10"
+        android:text="Decode with AES password"
+        android:textSize="18dp"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+    <EditText
+        android:id="@+id/editTextPasswordDecode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/appbar_padding"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:hint="Password" />
+
+    <Button
+        android:id="@+id/button_decode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Decode" />
+    <Button
+        android:id="@+id/button_cancel_decode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cancel" />
+    <TextView
+        android:id="@+id/decode_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="" />
+
+</LinearLayout>

@@ -9,16 +9,16 @@
             android:title="The file" />
         <Preference
             android:key="type"
-            android:summary="false"
+            android:summary="jpg"
             android:title="File type"/>
         <Preference
             android:key="Location"
             android:title="Location"
-            android:summary="/PicMarker/"/>
+            android:summary="/storage/emulated/0/Pictures/IMG_20221203_221809.jpg"/>
         <Preference
             android:key="size"
             android:title="File size"
-            android:summary="120kb"/>
+            android:summary="527kb"/>
 
 
     </PreferenceCategory>
@@ -26,10 +26,10 @@
         <Preference
             android:key="Width"
             android:title="Width"
-            android:summary="300px"/>
+            android:summary="1080px"/>
         <Preference
             android:key="Height"
             android:title="Height"
-            android:summary="300px"/>
+            android:summary="960px"/>
     </PreferenceCategory>
 </PreferenceScreen>

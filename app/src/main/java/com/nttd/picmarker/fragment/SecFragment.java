@@ -1,7 +1,9 @@
 package com.nttd.picmarker.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -21,22 +23,37 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.nttd.picmarker.DecodeActivity;
+import com.nttd.picmarker.MainActivity;
+import com.nttd.picmarker.MyApplication;
+import com.nttd.picmarker.PropertiesActivity;
 import com.nttd.picmarker.R;
 import com.nttd.picmarker.SteganographyActivity;
 
 import java.io.InputStream;
 
 public class SecFragment extends PreferenceFragmentCompat {
-
-    public static final int GET_MESSENGER =1;
-
+    MyApplication myApplication=new MyApplication();
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.preferences_security, rootKey);
 
 
         Preference swich_stegano =findPreference("switch_ste");
-        swich_stegano.setSummary("Has no Messenger");
+        //summary
+
+        if(myApplication.getEncoded()){
+
+            Boolean AES= myApplication.getAES();
+            Boolean ELSB= myApplication.getELSB();
+
+            swich_stegano.setSummary("Encoded"+ (AES? ", AES" : "")+(ELSB? ", ELSB" : "")+ ".");
+
+        }else{
+            swich_stegano.setSummary("Has no messenger encoded.");
+        }
+
+
         ActivityResultLauncher<Intent> SteganoActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -46,14 +63,25 @@ public class SecFragment extends PreferenceFragmentCompat {
                             // There are no request codes
                             Intent intent1 = result.getData();
                             Bundle data = intent1.getExtras();
-                            String messenger =data.getString("messenger");
-                            ///lam gi do
-                            System.out.println("tra ve thanh cong: "+messenger);
+                            String messenger = data.getString("Messenger");
+                            String password = data.getString("Password");
+                            boolean isAES = data.getBoolean("AES");
+                            boolean isELSB  = data.getBoolean("ELSB");
 
-                            swich_stegano.setSummary("Has Messenger");
 
+                            ///luu du lieu ma hoa vao global
+                            myApplication.setMessenger(messenger);
+                            myApplication.setPassword(password);
+                            myApplication.setAES(isAES);
+                            myApplication.setELSB(isELSB);
+                            myApplication.setEncoded(true);
+                            swich_stegano.setSummary("Encoded"+ (isAES? ", AES" : "")+(isELSB? ", ELSM" : "")+ ".");
+                            if(myApplication.getEncoded())
+                            System.out.println("thanh cong: "+messenger);
                         }else{
+                            myApplication.setEncoded(false);
                             System.out.println("tra ve khong thanh cong");
+
                         }
                     }
                 });
@@ -66,11 +94,23 @@ public class SecFragment extends PreferenceFragmentCompat {
 
 
                 Intent requestStegano = new Intent(getContext(), SteganographyActivity.class);
-                requestStegano.putExtra("Limit", "100");
-               //startActivityForResult(requestStegano, GET_MESSENGER);
                 SteganoActivityResultLauncher.launch(requestStegano);
                 return true;
             }
         });
+
+        Preference decode =findPreference("decode");
+        decode.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+
+
+                Intent requestDecode = new Intent(getContext(), DecodeActivity.class);
+                startActivity(requestDecode);
+                return true;
+            }
+        });
     }
+
+
 }

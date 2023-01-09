@@ -1,8 +1,12 @@
 package com.nttd.picmarker;
 
 import android.graphics.Path;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class FingerPath extends Path {
+import java.io.Serializable;
+
+public class FingerPath extends Path implements Parcelable, Serializable {
 
     private int color;
     private int strokeWidth;
@@ -23,6 +27,25 @@ public class FingerPath extends Path {
         this.strokeWidth = strokeWidth;
         this.path = path;
     }
+
+    protected FingerPath(Parcel in) {
+        color = in.readInt();
+        strokeWidth = in.readInt();
+        emboss = in.readByte() != 0;
+        blur = in.readByte() != 0;
+    }
+
+    public static final Creator<FingerPath> CREATOR = new Creator<FingerPath>() {
+        @Override
+        public FingerPath createFromParcel(Parcel in) {
+            return new FingerPath(in);
+        }
+
+        @Override
+        public FingerPath[] newArray(int size) {
+            return new FingerPath[size];
+        }
+    };
 
     public int getColor() {
         return color;
@@ -62,5 +85,19 @@ public class FingerPath extends Path {
 
     public void setBlur(boolean blur) {
         this.blur = blur;
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(color);
+        parcel.writeInt(strokeWidth);
+        parcel.writeByte((byte) (emboss ? 1 : 0));
+        parcel.writeByte((byte) (blur ? 1 : 0));
     }
 }

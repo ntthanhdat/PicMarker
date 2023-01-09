@@ -12,7 +12,9 @@ import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -22,12 +24,20 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class PaintView extends View {
 
+    private static final String EXTRA_EVENT_LIST = "event_list";
+    private static final String EXTRA_DELETED_EVENT_LIST = "deleted_event_list";
+    private static final String EXTRA_STATE = "instance_state";
     public int BRUSH_SIZE = 20;
     public static int COLOR_PEN = Color.BLACK;
     public static final int COLOR_ERASER = Color.WHITE;
@@ -42,12 +52,15 @@ public class PaintView extends View {
     private boolean blur;
     private MaskFilter mEmboss;
     private MaskFilter mBlur;
-    public ArrayList<FingerPath> paths = new ArrayList<>();
-    public ArrayList<FingerPath> deletedPaths = new ArrayList<>();
+    public ArrayList<FingerPath> paths = new ArrayList<>(100);
+    public ArrayList<FingerPath> deletedPaths = new ArrayList<>(100);
     private int pathIndex = -1;
+    private int delpathIndex = -1;
     public Bitmap mBitmap;
     public Canvas mCanvas;
     private Paint mBitmapPaint = new Paint(Paint.DITHER_FLAG);
+
+    File file;
 
     public PaintView(Context context) {
         super(context);
@@ -68,6 +81,7 @@ public class PaintView extends View {
 
         mEmboss = new EmbossMaskFilter(new float[] {1, 1, 1}, 0.4f, 6, 3.5f);
         mBlur = new BlurMaskFilter(BRUSH_SIZE/2, BlurMaskFilter.Blur.NORMAL);
+        setSaveEnabled(true);
     }
 
     public void init(DisplayMetrics metrics){
@@ -78,6 +92,7 @@ public class PaintView extends View {
         mCanvas.drawColor(-1);
         currentColor = COLOR_PEN;
         strokeWidth=BRUSH_SIZE;
+        initFilepath();
     }
 
     public void init2(int width , int height ){
@@ -86,7 +101,26 @@ public class PaintView extends View {
         mCanvas.drawColor(-1);
         currentColor = COLOR_PEN;
         strokeWidth=BRUSH_SIZE;
+        initFilepath();
     }
+    //getter //pathIndex
+
+    public int getPathIndex() {
+        return pathIndex;
+    }
+
+public int getDelPathIndex() {
+    return delpathIndex;
+}
+
+    public void setPathIndex(int pathIndex) {
+        this.pathIndex = pathIndex;
+    }
+
+    public void setDelPathIndex(int delpathIndex) {
+        this.delpathIndex = delpathIndex;
+    }
+
     //đổi màu bút
     public void pen(){
         currentColor = COLOR_PEN;
@@ -115,47 +149,26 @@ public class PaintView extends View {
         normal();
         mCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         pathIndex = -1;
+        delpathIndex=-1;
         pen();
         invalidate();
     }
 
-    public void redo(){
-        if(!deletedPaths.isEmpty()){
-            mPath = new Path();
-            //code moi
-            FingerPath oldpath = deletedPaths.get(deletedPaths.size()-1);
-            FingerPath fp = new FingerPath(oldpath.getColor(), oldpath.isEmboss(), oldpath.isBlur(), oldpath.getStrokeWidth(), oldpath.getPath());
-            mCanvas.drawPath(fp.getPath(),mPaint);
-            //hetcode moi
-
-            paths.add(fp);
-            pathIndex++;
-            deletedPaths.remove(deletedPaths.size()-1);
-            invalidate();
-        }
-    }
-
 
     private void SaveImage(Bitmap finalBitmap) {
-        String root = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES).toString();
-        File myDir = new File(root + "/saved_images");
-        myDir.mkdirs();
-        Random generator = new Random();
-        int n = 10000;
-        n = generator.nextInt(n);
-        String fname = "Image-"+ n +".jpg";
-        File file = new File(myDir, fname);
-        if (file.exists ()) file.delete ();
+        /*
         try {
             FileOutputStream out = new FileOutputStream(file);
-            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            finalBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
             out.flush();
             out.close();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+         */
+        FileUtils.SaveImage(finalBitmap, file);
         // Tell the media scanner about the new file so that it is
         // immediately available to the user.
         MediaScannerConnection.scanFile(getContext(), new String[]{file.toString()}, null,
@@ -167,18 +180,59 @@ public class PaintView extends View {
                         Log.i("ExternalStorage", "-> uri=" + uri);
                     }
                 });
+
+    }
+    public void initFilepath(){
+        String root = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES).toString();
+        File myDir = new File(root + "/saved_images");
+        myDir.mkdirs();
+        Random generator = new Random();
+        int n = 10000;
+        n = generator.nextInt(n);
+        String fname = "Image-"+ n +".jpg";
+        file = new File(myDir, fname);
+        if (file.exists ()) file.delete ();
+        MyApplication myApplication = new MyApplication();
+        myApplication.setFile(file);
+
+
+    }
+    public String getFilepath(){
+        return  file.toString();
     }
 
     public void save(){
         SaveImage(mBitmap);
     }
 
+    //redo
+    public void redo(){
+        if(!deletedPaths.isEmpty()&&delpathIndex>=0){
+            mPath = new Path();
+
+            FingerPath oldpath = deletedPaths.get(delpathIndex);
+
+            FingerPath fp = new FingerPath(oldpath.getColor(), oldpath.isEmboss(), oldpath.isBlur(), oldpath.getStrokeWidth(), oldpath.getPath());
+            mCanvas.drawPath(fp.getPath(),mPaint);
+
+            paths.add(fp);
+            pathIndex++;
+            delpathIndex--;
+            deletedPaths.remove(deletedPaths.size()-1);
+            invalidate();
+        }
+    }
+
+    //undo
     public void imageReverse(){
         if(!paths.isEmpty()) {
+
             deletedPaths.add(paths.get(pathIndex));
             paths.remove(pathIndex);
             mCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
             pathIndex--;
+            delpathIndex++;
             mCanvas.drawColor(-1);
             pen();
             invalidate();
@@ -216,6 +270,7 @@ public class PaintView extends View {
         paths.add(fp);
         pathIndex++;
         deletedPaths.clear();
+        delpathIndex=-1;
         mPath.reset();
         mPath.moveTo(x, y);
         mX = x;
@@ -259,5 +314,77 @@ public class PaintView extends View {
         return true;
     }
 
-    //stegano
+
+    @Override
+    public Parcelable onSaveInstanceState() {
+//        System.out.println("save instance");
+//        System.out.println(pathIndex);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(EXTRA_STATE, super.onSaveInstanceState());
+        bundle.putParcelableArrayList(EXTRA_EVENT_LIST, (ArrayList<? extends Parcelable>) paths);
+        bundle.putParcelableArrayList(EXTRA_DELETED_EVENT_LIST, (ArrayList<? extends Parcelable>) deletedPaths); //EXTRA_DELETED_EVENT_LIST
+        //getFilepath
+        return bundle;
+    }
+
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state)
+    {
+        //System.out.println(pathIndex);
+        //System.out.println("restore instance");
+
+        if (state instanceof Bundle)
+        {
+            System.out.println("restore instance success");
+            System.out.println(getFilepath());
+            Bundle bundle = (Bundle) state;
+            super.onRestoreInstanceState(bundle.getParcelable(EXTRA_STATE));
+            paths = bundle.<FingerPath>getParcelableArrayList(EXTRA_EVENT_LIST); //
+            deletedPaths = bundle.<FingerPath>getParcelableArrayList(EXTRA_DELETED_EVENT_LIST); //
+            if (paths == null) {
+                paths = new ArrayList<>();
+            }
+            mCanvas.drawColor(Color.TRANSPARENT);
+            //deletedPaths.clear();
+            for (FingerPath fp : paths){
+                mPaint.setColor(fp.getColor());
+                mPaint.setStrokeWidth(fp.getStrokeWidth());
+                mPaint.setMaskFilter(null);
+                if (fp.emboss)
+                    mPaint.setMaskFilter(mEmboss);
+                else if (fp.blur)
+                    mPaint.setMaskFilter(mBlur);
+                mCanvas.drawPath(fp.getPath(), mPaint);
+
+            }
+
+            return;
+        }
+        super.onRestoreInstanceState(state);
+    }
+
+
+
+
+
+
+    public void drawPath(){
+        if (paths == null) {
+            paths = new ArrayList<>();
+        }
+        mCanvas.drawColor(Color.TRANSPARENT);
+        //deletedPaths.clear();
+        for (FingerPath fp : paths){
+            mPaint.setColor(fp.getColor());
+            mPaint.setStrokeWidth(fp.getStrokeWidth());
+            mPaint.setMaskFilter(null);
+            if (fp.emboss)
+                mPaint.setMaskFilter(mEmboss);
+            else if (fp.blur)
+                mPaint.setMaskFilter(mBlur);
+            mCanvas.drawPath(fp.getPath(), mPaint);
+
+        }
+    }
 }

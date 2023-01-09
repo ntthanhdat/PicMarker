@@ -10,7 +10,8 @@
     android:id="@+id/paint_view"
     android:background="#cccccc"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent"
+    />
     <LinearLayout
         android:id="@+id/brush_panel"
         android:layout_width="match_parent"
@@ -51,4 +52,5 @@
             android:stretchColumns="*"
             />
     </LinearLayout>
+
 </FrameLayout>

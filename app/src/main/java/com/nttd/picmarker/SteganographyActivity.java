@@ -3,6 +3,8 @@ package com.nttd.picmarker;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -21,27 +23,21 @@ public class SteganographyActivity extends AppCompatActivity {
     EditText messenger, password;
     Button submitbttn, cancelbttn;
     TextView textstatus;
-    Switch switchAES;
+    Switch switchAES, switchELSM;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stegano);
         switchAES = findViewById(R.id.switchAES);
+        switchELSM = findViewById(R.id.switchELSM);
         messenger =  findViewById(R.id.editTextMessenger);
         password = findViewById(R.id.editTextPassword);
         submitbttn= findViewById(R.id.button_save);
         cancelbttn= findViewById(R.id.button_cancel);
         textstatus=  findViewById(R.id.text_status);
-
-        Intent intent1 = getIntent();
-        Bundle data = intent1.getExtras();
-
-
         switchAES.setChecked(false);
         password.setVisibility(View.GONE);
-        textstatus.setText( "Maximum character is "+ data.getString("Limit"));
-
         switchAES.setOnCheckedChangeListener(
                 new CompoundButton.OnCheckedChangeListener() {
                     @Override
@@ -49,7 +45,23 @@ public class SteganographyActivity extends AppCompatActivity {
                         password.setVisibility(switchAES.isChecked() ? View.VISIBLE : View.GONE);
                     }
                 });
+        messenger.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                submitbttn.setEnabled(messenger.getText().length() > 0);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        submitbttn.setEnabled(messenger.getText().length() > 0);
         submitbttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -59,6 +71,8 @@ public class SteganographyActivity extends AppCompatActivity {
                 if(switchAES.isChecked()){
                     i.putExtra("Password", password.getText().toString());
                 }
+                i.putExtra("AES", switchAES.isChecked());
+                i.putExtra("ELSB", switchELSM.isChecked());
                 setResult(Activity.RESULT_OK,i);
                 finish();
             }
@@ -79,5 +93,10 @@ public class SteganographyActivity extends AppCompatActivity {
         setResult(Activity.RESULT_CANCELED);
         super.onBackPressed();
     }
-
+    @Override
+    public void onSaveInstanceState(Bundle b) {
+        super.onSaveInstanceState(b);
+        b.putString("Messenger", messenger.getText().toString());
+        b.putString("Password", password.getText().toString());
+    }
 }

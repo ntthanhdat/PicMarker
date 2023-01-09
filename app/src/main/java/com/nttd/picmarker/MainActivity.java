@@ -2,7 +2,10 @@ package com.nttd.picmarker;
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -22,16 +25,23 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import com.nttd.picmarker.R;
+import com.nttd.picmarker.encode.EncodeTask;
 
 import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
 
-    private PaintView paintView;
+
+    private static PaintView paintView;
+
+
     public static final int PICK_IMAGE = 102;
+    public static final int RESULT_MESSENGER = 122;
+
     private Bitmap nBitmap;
     private String strFileName;
     //slight foot
@@ -40,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ViewGroup mBrushTypePanel;
     private ViewGroup mBrushType;
-
+MyApplication myApp =(MyApplication) this.getApplication();
 
     static int[] COLORS = {
             Color.rgb(255,  51, 255), // DARK PINK
@@ -63,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
             Color.rgb(102, 255, 204), // BRIGHT GREEN
     };
 
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -72,8 +83,8 @@ public class MainActivity extends AppCompatActivity {
 
         ///tao bang mau
 
-        mBrushPanel = (ViewGroup)findViewById(R.id.brush_panel);
-        mBrushColors = (ViewGroup)findViewById(R.id.brush_colors);
+        mBrushPanel = findViewById(R.id.brush_panel);
+        mBrushColors = findViewById(R.id.brush_colors);
         mBrushPanel.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener()
         {
             @Override
@@ -90,8 +101,8 @@ public class MainActivity extends AppCompatActivity {
         //het tao bang mau
 
         //tao brush type
-        mBrushTypePanel = (ViewGroup)findViewById(R.id.brush_choose_panel);
-        mBrushType = (ViewGroup)findViewById(R.id.brush_type);
+        mBrushTypePanel =findViewById(R.id.brush_choose_panel);
+        mBrushType = findViewById(R.id.brush_type);
         mBrushTypePanel.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener()
         {
             @Override
@@ -135,15 +146,27 @@ public class MainActivity extends AppCompatActivity {
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         paintView.init(metrics);
+        //khoi phuc net ve tu sau khi chuyen activity
+        if(myApp.getPathIndex()!=0){
+            paintView.paths=myApp.getPaths();
+            paintView.deletedPaths=myApp.getDel_paths();
+            paintView.setPathIndex(myApp.getPathIndex());
+            paintView.setDelPathIndex(myApp.getDelpathIndex());
+            paintView.drawPath();
+            //paintView.mBitmap=myApp.getBitmap();
+            setBitmapPaintview(myApp.getBitmap());
+           // System.out.println("da dc luu");
+        }
 
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.active_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
-
+//menu chinh
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
@@ -186,27 +209,90 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             case R.id.save:
-                paintView.save();
-                Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
+
+               //lay thong tin ma hoa
+                //doc du lieu ma hoa
+
+                if(myApp.getEncoded()){
+                    String messenger1 = myApp.getMessenger();
+                    String password = myApp.getPassword();
+                    Boolean AES= myApp.getAES();
+                    Boolean ELSB= myApp.getELSB();
+                    System.out.println("messenger da luu: "+messenger1+" ");
+                    EncodeTask encodeTask = new EncodeTask(
+                            paintView.getFilepath(),
+                            messenger1,
+                            password,
+                            AES,
+                            ELSB,
+                            paintView.mBitmap);
+
+                    encodeTask.SteganographyProcess();
+                    FileUtils.scanFile(this, FileUtils.uriToFilePath(this , EncodeTask.getResultUri()));
+                    System.out.println("encode thanh cong ");
+                    Toast.makeText(this, "Encoded! Saved!", Toast.LENGTH_SHORT).show();
+                }else{
+                   paintView.save();
+                    Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
+                }
+
+
                 return true;
 
             case R.id.properties:
                 startActivity(new Intent(MainActivity.this, PropertiesActivity.class));
                 break;
             case R.id.help:
+                startActivity(new Intent(MainActivity.this, HelpActivity.class));
                 break;
 
 
             case R.id.exit:
-                MainActivity.this.finish();
-                System.exit(0);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                   builder.setMessage("Do you want to save picture?")
+                        .setTitle("Are you sure you want to exit?")
+                            .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    MainActivity.this.finish();
+                    System.exit(0);
+                }
+            })
+                    .setNegativeButton("no", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            MainActivity.this.finish();
+                            System.exit(0);
+                        }
+                    })
+                .setNeutralButton("cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(getApplicationContext(),"cancel",Toast.LENGTH_SHORT).show();
+                    }
+                });
+             AlertDialog dialog = builder.create();
+
+
+                dialog.show();
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
         return true;
     }
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        myApp.setPaths(paintView.paths);
+        myApp.setDel_paths(paintView.deletedPaths);
+        myApp.setPathIndex(paintView.getPathIndex());
+        myApp.setDelpathIndex(paintView.getDelPathIndex());
 
+        myApp.setBitmap(paintView.mBitmap);
+        //System.out.println("luu");
+    }
+
+//nhan ket qua mo hinh anh
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -221,6 +307,8 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     InputStream img = getContentResolver().openInputStream(url_value);
                     tempBitmap = BitmapFactory.decodeStream(img);
+
+                    myApp.setBitmapgoc(tempBitmap);
                     Bitmap.Config config;
                     if(tempBitmap.getConfig() != null){
                         config = tempBitmap.getConfig();
@@ -230,8 +318,6 @@ public class MainActivity extends AppCompatActivity {
                     paintView.clear();
                     nBitmap = Bitmap.createScaledBitmap(tempBitmap,paintView.mCanvas.getWidth(),paintView.mCanvas.getHeight(),false);
 
-                    float h = paintView.mCanvas.getHeight();
-                    float w = paintView.mCanvas.getWidth();
                     float centreX = (paintView.mCanvas.getWidth()-nBitmap.getWidth()) / 2;
                     float centreY = (paintView.mCanvas.getHeight()-nBitmap.getHeight()) / 2;
 
@@ -251,6 +337,18 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
+    private void setBitmapPaintview(Bitmap tempBitmap){
+        paintView.clear();
+        nBitmap = Bitmap.createScaledBitmap(tempBitmap,paintView.mCanvas.getWidth(),paintView.mCanvas.getHeight(),false);
+
+        float centreX = (paintView.mCanvas.getWidth()-nBitmap.getWidth()) / 2;
+        float centreY = (paintView.mCanvas.getHeight()-nBitmap.getHeight()) / 2;
+
+        paintView.init2(nBitmap.getWidth(),nBitmap.getHeight());
+        paintView.mCanvas.drawBitmap(nBitmap, centreX,centreY, null);
+        paintView.mBitmap.setConfig(nBitmap.getConfig());
+        paintView.pen();
+    }
 //chuc nang tao bang mau
     private void createBrushPanelContent()
     {
@@ -264,7 +362,6 @@ public class MainActivity extends AppCompatActivity {
             tableRow.addView(createToolButton(tableRow, R.drawable.ic_paint_splot, i));
         }
     }
-
     private ImageButton createToolButton(ViewGroup parent, int drawableResId, int index)
     {
         ImageButton button = (ImageButton)getLayoutInflater().inflate(R.layout.button_paint_spot, parent, false);

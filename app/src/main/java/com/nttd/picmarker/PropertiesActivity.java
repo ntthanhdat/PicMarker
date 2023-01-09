@@ -1,5 +1,6 @@
 package com.nttd.picmarker;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import com.google.android.material.tabs.TabLayout;
 
 public class PropertiesActivity extends AppCompatActivity {
 
+    private static final int RESULT_MESSENGER = 122;
     TabLayout tabLayout;
     ViewPager2 viewPager1;
     com.nttd.picmarker.PageAdapter pageAdapter;

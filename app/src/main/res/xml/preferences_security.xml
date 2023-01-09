@@ -13,6 +13,6 @@
         <Preference
             android:key="decode"
             android:title="Decode with password"
-            android:summary="300px"/>
+            android:summary=""/>
     </PreferenceCategory>
 </PreferenceScreen>
