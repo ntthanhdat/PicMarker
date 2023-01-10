@@ -73,7 +73,12 @@ public class MyApplication extends Application {
         Encoded = encoded;
     }
 
-
+    public int getNumberOfByte(){
+        int w = bitmap.getWidth();
+        int h = bitmap.getHeight();
+        int numberOfPixels = w * h;
+        return numberOfPixels;
+    }
 
 
     public static void setPaths(ArrayList<FingerPath> paths) {

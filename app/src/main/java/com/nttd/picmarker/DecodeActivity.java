@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.nttd.picmarker.decode.DecodeTask;
+import com.scottyab.aescrypt.AESCrypt;
 
 public class DecodeActivity extends AppCompatActivity {
     Button ok, cancel;
@@ -45,26 +46,45 @@ public class DecodeActivity extends AppCompatActivity {
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //gui intent tra ve
-//                Intent i =new Intent();
-//                i.putExtra("Messenger", messenger.getText().toString());
-//                if(switchAES.isChecked()){
-//                    i.putExtra("Password", password.getText().toString());
-//                }
-//                i.putExtra("AES", switchAES.isChecked());
-//                i.putExtra("ELSB", switchELSM.isChecked());
-//                setResult(Activity.RESULT_OK,i);
-//                finish();
-
                 System.out.println("decode...");
-                DecodeTask decodeTask=new DecodeTask();
-                decodeTask.SteganographyDecodeProcess();
-                if(myApplication.getDecoded()){
-                    decodestatus.setText(myApplication.getMessenger());
 
-                }else{
-                    decodestatus.setText( "Not decoded");
-                }
+                    try {
+
+                        DecodeTask decodeTask = new DecodeTask();
+                        decodeTask.SteganographyDecodeProcess();
+                        if (myApplication.getDecoded()) {
+                            if (switchAES.isChecked()) {
+                                try {
+                                    String msg;
+                                    //AESHelper aesHelper = new AESHelper();
+                                    String pass=password.getText().toString().trim();
+                                    if(pass.length()<16){
+                                        pass=pass.concat("aaaaaaaaaaaaaaaa");
+                                    }
+                                    char[] data=pass.toCharArray();
+                                    pass=String.copyValueOf(data,0,16);
+                                    System.out.println(pass);
+                                    //msg = aesHelper.decrypt(pass, myApplication.getMessenger()); //password.getText().toString().trim()
+//                                    SympleCrypto sympleCrypto=new SympleCrypto();
+//                                    msg = sympleCrypto.decrypt(pass, myApplication.getMessenger());
+                                    msg= AESCrypt.decrypt(pass,myApplication.getMessenger());
+                                    decodestatus.setText(msg);
+                                } catch (Exception e) {
+                                    decodestatus.setText("Can't decoded");
+                                    e.printStackTrace();
+                                }
+
+                            } else {
+                                decodestatus.setText(myApplication.getMessenger());
+                                System.out.println(myApplication.getMessenger());
+                            }
+
+
+                        }
+                    }catch(Exception e1){
+                        e1.printStackTrace();
+                        decodestatus.setText( "Not decoded");
+                    }
 
 
             }

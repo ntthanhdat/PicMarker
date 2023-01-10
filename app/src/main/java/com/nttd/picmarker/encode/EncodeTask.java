@@ -4,8 +4,11 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
 
+import com.nttd.picmarker.AESHelper;
 import com.nttd.picmarker.FileUtils;
 import com.nttd.picmarker.MyApplication;
+import com.nttd.picmarker.SympleCrypto;
+import com.scottyab.aescrypt.AESCrypt;
 
 import java.io.File;
 import java.util.Objects;
@@ -53,15 +56,40 @@ public class EncodeTask {
     }
 //xu ly chinh
     public void SteganographyProcess(){
-        int requiredLength = getRequiredLength();
+
         int numberOfPixels = getNumberOfPixels();
+        //chon che do ma hoa AES thi se thay doi messenger
+        if(isAES){
+
+            try {
+                String pass=mPassword.trim();
+                if(pass.length()<16){
+                    pass=pass.concat("aaaaaaaaaaaaaaaa");
+                }
+                char[] data=pass.toCharArray();
+                pass=String.copyValueOf(data,0,16);
+                System.out.println(pass);
+                //AESHelper aesHelper= new AESHelper();
+                //mMessenger=aesHelper.encrypt(pass, mMessenger.trim()); //mPassword.trim()
+                //SympleCrypto sympleCrypto=new SympleCrypto();
+                // mMessenger = sympleCrypto.encrypt(pass, mMessenger.trim());
+                mMessenger= AESCrypt.encrypt(pass,mMessenger);
+                System.out.println(mMessenger);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+        int requiredLength = getRequiredLength();
         if ( requiredLength> numberOfPixels) {
             throw new IllegalArgumentException("Message is too long to fit into pixels.");
         }
 //giau cac bit vao pixel, luu duoi dang array
         int[] encodedPixels = encode(getPixels(mBitmap, requiredLength),getMessenger());
 
+
         setPixels(mBitmap, encodedPixels);
+
 //luu bitmap
         resultUri = FileUtils.saveBitmap(mBitmap);
         //FileUtils.scanFile(this, FileUtils.uriToFilePath(new , resultUri));

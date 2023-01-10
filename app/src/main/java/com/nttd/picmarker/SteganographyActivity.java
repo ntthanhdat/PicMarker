@@ -24,6 +24,8 @@ public class SteganographyActivity extends AppCompatActivity {
     Button submitbttn, cancelbttn;
     TextView textstatus;
     Switch switchAES, switchELSM;
+    MyApplication myApplication= new MyApplication();
+    int limit_char=myApplication.getNumberOfByte();
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -38,6 +40,12 @@ public class SteganographyActivity extends AppCompatActivity {
         textstatus=  findViewById(R.id.text_status);
         switchAES.setChecked(false);
         password.setVisibility(View.GONE);
+        switchELSM.setVisibility(View.GONE);
+        if(switchELSM.isChecked()){
+            textstatus.setText("Character limit: "+ (limit_char / 8 - 32));
+        }else{
+            textstatus.setText("Character limit: "+ (limit_char * 4 / 3 / 8 - 32));
+        }
         switchAES.setOnCheckedChangeListener(
                 new CompoundButton.OnCheckedChangeListener() {
                     @Override

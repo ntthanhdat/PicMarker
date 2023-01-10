@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/appbar_padding"
         android:ems="10"
-        android:inputType="textShortMessage"
+        android:inputType="textPassword"
         android:hint="Password" />
 
 

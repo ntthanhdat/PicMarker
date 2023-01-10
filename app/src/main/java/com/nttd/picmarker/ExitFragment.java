@@ -15,12 +15,12 @@ public class ExitFragment  extends DialogFragment {
         builder.setMessage("Do you want to save before exit?")
                 .setPositiveButton("yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // START THE GAME!
+                        // luu
                     }
                 })
                 .setNegativeButton("no", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // User cancelled the dialog
+                        // thoat
                     }
                 });
         // Create the AlertDialog object and return it

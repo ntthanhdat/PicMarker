@@ -218,7 +218,7 @@ MyApplication myApp =(MyApplication) this.getApplication();
                     String password = myApp.getPassword();
                     Boolean AES= myApp.getAES();
                     Boolean ELSB= myApp.getELSB();
-                    System.out.println("messenger da luu: "+messenger1+" ");
+                    System.out.println("messenger da luu: "+messenger1+" "+password);
                     EncodeTask encodeTask = new EncodeTask(
                             paintView.getFilepath(),
                             messenger1,
@@ -309,6 +309,8 @@ MyApplication myApp =(MyApplication) this.getApplication();
                     tempBitmap = BitmapFactory.decodeStream(img);
 
                     myApp.setBitmapgoc(tempBitmap);
+
+                    myApp.setEncoded(false);
                     Bitmap.Config config;
                     if(tempBitmap.getConfig() != null){
                         config = tempBitmap.getConfig();
